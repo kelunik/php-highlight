@@ -88,6 +88,10 @@ class DefaultHighlighter implements Highlighter {
             "variable" => [
                 T_VARIABLE,
             ],
+            "number" => [
+                T_LNUMBER,
+                T_DNUMBER,
+            ],
         ];
 
         foreach ($classTokenMap as $class => $tokens) {
