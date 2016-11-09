@@ -118,10 +118,11 @@ class DefaultHighlighter implements Highlighter {
             }
         }
 
-        return "<pre>{$output}</pre>";
+        return "<pre><code>{$output}</code></pre>";
     }
 
     private function escapeHtml(string $str): string {
         return htmlspecialchars($str, ENT_QUOTES, "utf-8");
     }
 }
+
