@@ -101,9 +101,20 @@ class DefaultHighlighter implements Highlighter {
         $this->parser->parse($source);
         $output = "";
 
+        $quotes_open = false;
+
         foreach ($this->lexer->getTokens() as $token) {
             if (is_string($token)) {
-                $output .= $this->escapeHtml($token);
+                if ($token === '"') {
+                    if ($quotes_open) {
+                        $output .= $this->escapeHtml($token) . "</span>";
+                    } else {
+                        $output .=  "<span class='string'>" . $this->escapeHtml($token);
+                    }
+                    $quotes_open = !$quotes_open;
+                } else {
+                    $output .= $this->escapeHtml($token);
+                }
                 continue;
             }
 
