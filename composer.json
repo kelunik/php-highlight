@@ -1,0 +1,18 @@
+{
+    "name": "kelunik/highlight",
+    "description": "PHP Syntax Highlighter",
+    "type": "library",
+    "require": {
+        "nikic/php-parser": "^2.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niklas Keller",
+            "email": "me@kelunik.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Kelunik\\Highlight\\": "src"}
+    }
+}
