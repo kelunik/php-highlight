@@ -78,6 +78,7 @@ class DefaultHighlighter implements Highlighter {
             ],
             "string" => [
                 T_CONSTANT_ENCAPSED_STRING,
+                T_ENCAPSED_AND_WHITESPACE,
             ],
             "comment" => [
                 T_COMMENT,
@@ -105,17 +106,10 @@ class DefaultHighlighter implements Highlighter {
         $this->parser->parse($source);
         $output = "";
 
-        $quotes_open = false;
-
         foreach ($this->lexer->getTokens() as $token) {
             if (is_string($token)) {
                 if ($token === '"') {
-                    if ($quotes_open) {
-                        $output .= $this->escapeHtml($token) . "</span>";
-                    } else {
-                        $output .=  "<span class='string'>" . $this->escapeHtml($token);
-                    }
-                    $quotes_open = !$quotes_open;
+                    $output .= "<span class='string'>\"</span>";
                 } else {
                     $output .= $this->escapeHtml($token);
                 }
