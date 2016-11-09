@@ -93,6 +93,11 @@ class DefaultHighlighter implements Highlighter {
                 T_LNUMBER,
                 T_DNUMBER,
             ],
+            "php-open-close" => [
+                T_OPEN_TAG,
+                T_OPEN_TAG_WITH_ECHO,
+                T_CLOSE_TAG,
+            ],
         ];
 
         foreach ($classTokenMap as $class => $tokens) {
