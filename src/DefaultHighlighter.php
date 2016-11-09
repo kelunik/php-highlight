@@ -98,6 +98,9 @@ class DefaultHighlighter implements Highlighter {
                 T_OPEN_TAG_WITH_ECHO,
                 T_CLOSE_TAG,
             ],
+            "identifier" => [
+                T_STRING,
+            ],
         ];
 
         foreach ($classTokenMap as $class => $tokens) {
