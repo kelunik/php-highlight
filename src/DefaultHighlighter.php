@@ -106,6 +106,10 @@ class DefaultHighlighter implements Highlighter {
             ],
             "identifier" => [
                 T_STRING,
+                T_NS_SEPARATOR,
+                T_DIR,
+                T_FILE,
+                T_LINE,
             ],
         ];
 
