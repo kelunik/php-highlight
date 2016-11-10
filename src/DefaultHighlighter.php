@@ -66,6 +66,12 @@ class DefaultHighlighter implements Highlighter {
                 T_FUNCTION,
                 T_USE,
                 T_NAMESPACE,
+                T_EXTENDS,
+                T_IMPLEMENTS,
+                T_LIST,
+                T_INSTEADOF,
+                T_AS,
+                T_VAR,
             ],
             "cast" => [
                 T_UNSET_CAST,
