@@ -8,8 +8,9 @@ use PhpParser\ParserFactory;
 class DefaultHighlighter implements Highlighter {
     private $lexer;
     private $tokenClassMap;
+    private $charClassMap;
 
-    public function __construct() {
+    public function __construct(string $classPrefix = "") {
         $this->lexer = new Lexer\Emulative;
         $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7, $this->lexer);
 
@@ -113,9 +114,25 @@ class DefaultHighlighter implements Highlighter {
             ],
         ];
 
+        if ($classPrefix !== "") {
+            $classPrefix .= "-";
+        }
+
         foreach ($classTokenMap as $class => $tokens) {
             foreach ($tokens as $token) {
-                $this->tokenClassMap[$token] = $class;
+                $this->tokenClassMap[$token] = $classPrefix . $class;
+            }
+        }
+
+        $classCharMap = [
+            "string" => ['"'],
+            /* @see https://github.com/php/php-src/blob/php-7.0.0/Zend/zend_language_scanner.l#L1127 */
+            "token" => str_split(";:,.[]()|^&+-/*=%!~$<>?@"),
+        ];
+
+        foreach ($classCharMap as $class => $chars) {
+            foreach ($chars as $char) {
+                $this->charClassMap[$char] = $classPrefix . $class;
             }
         }
     }
@@ -125,27 +142,26 @@ class DefaultHighlighter implements Highlighter {
         $output = "";
 
         foreach ($this->lexer->getTokens() as $token) {
-            if (is_string($token)) {
-                if ($token === '"') {
-                    $output .= "<span class='string'>\"</span>";
-                } else {
-                    $output .= $this->escapeHtml($token);
-                }
-                continue;
-            }
-
-            if (isset($this->tokenClassMap[$token[0]])) {
-                $output .= "<span class='" . $this->escapeHtml($this->tokenClassMap[$token[0]]) . "'>";
-            }
-
-            $output .= $this->escapeHtml($token[1]);
-
-            if (isset($this->tokenClassMap[$token[0]])) {
-                $output .= "</span>";
-            }
+            $output .= is_string($token) ? $this->processString($token) : $this->processArray($token);
         }
 
         return "<pre><code>{$output}</code></pre>";
+    }
+
+    protected function processString(string $token): string {
+        if (isset($this->charClassMap[$token])) {
+            return "<span class='" . $this->escapeHtml($this->charClassMap[$token]) . "'>" . $this->escapeHtml($token) . "</span>";
+        }
+
+        return $this->escapeHtml($token);
+    }
+
+    protected function processArray(array $token): string {
+        if (isset($this->tokenClassMap[$token[0]])) {
+            return "<span class='" . $this->escapeHtml($this->tokenClassMap[$token[0]]) . "'>" . $this->escapeHtml($token[1]) . "</span>";
+        }
+
+        return $this->escapeHtml($token[1]);
     }
 
     private function escapeHtml(string $str): string {
