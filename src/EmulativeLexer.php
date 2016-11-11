@@ -2,20 +2,18 @@
 
 namespace Kelunik\Highlight;
 
-use PhpParser\Lexer;
-use PhpParser\ParserFactory;
+use PhpParser\Lexer as PhpLexer;
 
-class DefaultHighlighter implements Highlighter {
+final class EmulativeLexer implements Lexer {
     private $lexer;
-    private $tokenClassMap;
-    private $charClassMap;
+    private $tokenTypeMap;
+    private $literalTypeMap;
 
-    public function __construct(string $classPrefix = "") {
-        $this->lexer = new Lexer\Emulative;
-        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7, $this->lexer);
+    public function __construct(PhpLexer $lexer = null) {
+        $this->lexer = $lexer ?: new PhpLexer\Emulative;
 
         $classTokenMap = [
-            "control" => [
+            Lexer::TYPE_CONTROL => [
                 T_IF,
                 T_ELSEIF,
                 T_ELSE,
@@ -37,7 +35,7 @@ class DefaultHighlighter implements Highlighter {
                 T_CATCH,
                 T_FINALLY,
             ],
-            "keyword" => [
+            Lexer::TYPE_KEYWORD => [
                 T_REQUIRE,
                 T_REQUIRE_ONCE,
                 T_INCLUDE,
@@ -74,7 +72,7 @@ class DefaultHighlighter implements Highlighter {
                 T_AS,
                 T_VAR,
             ],
-            "cast" => [
+            Lexer::TYPE_CAST => [
                 T_UNSET_CAST,
                 T_BOOL_CAST,
                 T_OBJECT_CAST,
@@ -83,29 +81,29 @@ class DefaultHighlighter implements Highlighter {
                 T_DOUBLE_CAST,
                 T_INT_CAST,
             ],
-            "string" => [
+            Lexer::TYPE_STRING => [
                 T_CONSTANT_ENCAPSED_STRING,
                 T_ENCAPSED_AND_WHITESPACE,
             ],
-            "comment" => [
+            Lexer::TYPE_COMMENT => [
                 T_COMMENT,
             ],
-            "doc-comment" => [
+            Lexer::TYPE_DOC_COMMENT => [
                 T_DOC_COMMENT,
             ],
-            "variable" => [
+            Lexer::TYPE_VARIABLE => [
                 T_VARIABLE,
             ],
-            "number" => [
+            Lexer::TYPE_NUMBER => [
                 T_LNUMBER,
                 T_DNUMBER,
             ],
-            "php-open-close" => [
+            Lexer::TYPE_OPEN_CLOSE => [
                 T_OPEN_TAG,
                 T_OPEN_TAG_WITH_ECHO,
                 T_CLOSE_TAG,
             ],
-            "identifier" => [
+            Lexer::TYPE_IDENTIFIER => [
                 T_STRING,
                 T_NS_SEPARATOR,
                 T_DIR,
@@ -114,58 +112,45 @@ class DefaultHighlighter implements Highlighter {
             ],
         ];
 
-        if ($classPrefix !== "") {
-            $classPrefix .= "-";
-        }
-
-        foreach ($classTokenMap as $class => $tokens) {
+        foreach ($classTokenMap as $type => $tokens) {
             foreach ($tokens as $token) {
-                $this->tokenClassMap[$token] = $classPrefix . $class;
+                $this->tokenTypeMap[$token] = $type;
             }
         }
 
-        $classCharMap = [
-            "string" => ['"'],
-            /* @see https://github.com/php/php-src/blob/php-7.0.0/Zend/zend_language_scanner.l#L1127 */
-            "token" => str_split(";:,.[]()|^&+-/*=%!~$<>?@"),
+        $classLiteralMap = [
+            Lexer::TYPE_STRING => ['"'],
+            Lexer::TYPE_SCREAM => ["@"],
         ];
 
-        foreach ($classCharMap as $class => $chars) {
-            foreach ($chars as $char) {
-                $this->charClassMap[$char] = $classPrefix . $class;
+        foreach ($classLiteralMap as $type => $literals) {
+            foreach ($literals as $literal) {
+                $this->literalTypeMap[$literal] = $type;
             }
         }
     }
 
-    public function highlight(string $source): string {
-        $this->parser->parse($source);
-        $output = "";
+    public function lex(string $source): array {
+        $this->lexer->startLexing($source);
+        $tokens = [];
 
         foreach ($this->lexer->getTokens() as $token) {
-            $output .= is_string($token) ? $this->processString($token) : $this->processArray($token);
+            if (is_array($token)) {
+                $tokens[] = [
+                    $this->tokenTypeMap[$token[0]] ?? Lexer::TYPE_LITERAL,
+                    $token[1],
+                ];
+            } else if (is_string($token)) {
+                $tokens[] = [
+                    $this->literalTypeMap[$token] ?? Lexer::TYPE_LITERAL,
+                    $token,
+                ];
+            } else {
+                throw new \RuntimeException("Invalid token type: " . gettype($token));
+            }
         }
 
-        return "<pre><code>{$output}</code></pre>";
-    }
-
-    protected function processString(string $token): string {
-        if (isset($this->charClassMap[$token])) {
-            return "<span class='" . $this->escapeHtml($this->charClassMap[$token]) . "'>" . $this->escapeHtml($token) . "</span>";
-        }
-
-        return $this->escapeHtml($token);
-    }
-
-    protected function processArray(array $token): string {
-        if (isset($this->tokenClassMap[$token[0]])) {
-            return "<span class='" . $this->escapeHtml($this->tokenClassMap[$token[0]]) . "'>" . $this->escapeHtml($token[1]) . "</span>";
-        }
-
-        return $this->escapeHtml($token[1]);
-    }
-
-    private function escapeHtml(string $str): string {
-        return htmlspecialchars($str, ENT_QUOTES, "utf-8");
+        return $tokens;
     }
 }
 
