@@ -63,6 +63,7 @@ if ($argc < 2) {
                 font-size: smaller;
             }
 
+            .php-control,
             .php-keyword {
                 color: purple;
             }
@@ -87,6 +88,18 @@ if ($argc < 2) {
             .php-comment {
                 color: grey;
                 font-style: italic;
+            }
+
+            .php-doc-comment {
+                color: green;
+            }
+
+            .php-variable {
+                color: #468;
+            }
+
+            .php-cast {
+                color: grey;
             }
         </style>
     </head>
