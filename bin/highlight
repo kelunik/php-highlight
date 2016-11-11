@@ -11,8 +11,8 @@ if ($argc > 2) {
 }
 
 if (IS_PHAR && $argc === 2 && ($argv[1] === "-v" || $argv[1] === "--version")) {
-    $version = file_get_contents(__DIR__ . "/../info/build.version") ?: "dev-master";
-    $time = file_get_contents(__DIR__ . "/../info/build.time");
+    $version = trim(file_get_contents(__DIR__ . "/../info/build.version")) ?: "dev-master";
+    $time = trim(file_get_contents(__DIR__ . "/../info/build.time"));
 
     print "kelunik/highlight, " . $version . " (built: " . date("M jS Y H:i:s T", $time) . ")";
     print PHP_EOL;
