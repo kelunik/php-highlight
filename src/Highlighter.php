@@ -10,7 +10,7 @@ final class Highlighter {
 
     public function __construct(TokenFormatter $formatter, Lexer $lexer = null) {
         $this->formatter = $formatter;
-        $this->lexer = $lexer ?: new EmulativeLexer;
+        $this->lexer = $lexer ?: new PhpLexer;
     }
 
     public function addPreProcessor(PreProcessor $preProcessor) {

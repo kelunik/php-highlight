@@ -2,15 +2,15 @@
 
 namespace Kelunik\Highlight;
 
-use PhpParser\Lexer as PhpLexer;
+use PhpParser;
 
-final class EmulativeLexer implements Lexer {
+final class PhpLexer implements Lexer {
     private $lexer;
     private $tokenTypeMap;
     private $literalTypeMap;
 
-    public function __construct(PhpLexer $lexer = null) {
-        $this->lexer = $lexer ?: new PhpLexer\Emulative;
+    public function __construct(PhpParser\Lexer $lexer = null) {
+        $this->lexer = $lexer ?: new PhpParser\Lexer\Emulative;
 
         $classTokenMap = [
             Lexer::TYPE_CONTROL => [
