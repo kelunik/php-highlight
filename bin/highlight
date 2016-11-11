@@ -1,117 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-use Kelunik\Highlight\HtmlFormatter;
+use Kelunik\Highlight\AnsiFormatter;
 
 if ($argc < 2) {
     echo "Usage: highlight /path/to/file.php";
     exit(1);
 }
 
-?><!DOCTYPE html>
-<html>
-    <head>
-        <title>kelunik/highlight - <?= htmlspecialchars($argv[1], ENT_QUOTES, "utf-8") ?></title>
+require __DIR__ . "/../vendor/autoload.php";
 
-        <style>
-            body {
-                margin: 0;
-                padding: 50px;
-                background: #fafafa;
-            }
-
-            .source-php {
-                display: block;
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 3px;
-                box-shadow: 0 0 30px rgba(0,0,0,.1);
-                padding: 15px;
-                counter-reset: line;
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                position: relative;
-            }
-
-            /* Line number separator, not via border on lines, because of wrapping lines */
-            .source-php::before {
-                position: absolute;
-                left: 51px;
-                top: 0;
-                height: 100%;
-                width: 1px;
-                background: #eee;
-                content: "";
-            }
-
-            .php-line {
-                display: inline-block;
-                /* Align wrapping of too long lines */
-                text-indent: -42px;
-                padding-left: 42px;
-            }
-
-            .php-line::before {
-                counter-increment: line;
-                content: counter(line);
-                display: inline-block;
-                width: 30px;
-                padding-right: 6px;
-                margin-right: 6px;
-                text-align: right;
-                color: #888;
-                font-size: smaller;
-            }
-
-            .php-control,
-            .php-keyword {
-                color: purple;
-            }
-
-            .php-string {
-                color: green;
-            }
-
-            .php-number {
-                color: red;
-            }
-
-            .php-identifier {
-                color: teal;
-            }
-
-            .php-open-close {
-                color: grey;
-                font-weight: bold;
-            }
-
-            .php-comment {
-                color: grey;
-                font-style: italic;
-            }
-
-            .php-doc-comment {
-                color: green;
-            }
-
-            .php-variable {
-                color: #468;
-            }
-
-            .php-cast {
-                color: grey;
-            }
-        </style>
-    </head>
-
-    <body>
-        <?php
-
-        require __DIR__ . "/../vendor/autoload.php";
-
-        $hl = new Kelunik\Highlight\Highlighter(new HtmlFormatter("php"));
-        print $hl->highlight(file_get_contents($argv[1]));
-
-        ?>
-    </body>
-</html>
+$hl = new Kelunik\Highlight\Highlighter(new AnsiFormatter);
+print $hl->highlight(file_get_contents($argv[1]));

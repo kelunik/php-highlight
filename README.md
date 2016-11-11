@@ -17,5 +17,9 @@ $hl->highlight("<?php print 'Hello World';");
 **CLI**
 
 ```bash
-bin/highlight /path/to/file.php > out.html
+bin/highlight /path/to/file.php
+```
+
+```bash
+bin/highlight-html /path/to/file.php > out.html
 ```
