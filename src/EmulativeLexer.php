@@ -46,6 +46,7 @@ final class EmulativeLexer implements Lexer {
                 T_EXIT,
                 T_DEFAULT,
                 T_YIELD,
+                T_YIELD_FROM,
                 T_THROW,
                 T_GLOBAL,
                 T_UNSET,
@@ -111,6 +112,8 @@ final class EmulativeLexer implements Lexer {
                 T_DIR,
                 T_FILE,
                 T_LINE,
+                T_ARRAY,
+                T_CALLABLE,
             ],
         ];
 
