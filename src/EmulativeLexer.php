@@ -72,6 +72,7 @@ final class EmulativeLexer implements Lexer {
                 T_AS,
                 T_VAR,
                 T_CONST,
+                T_RETURN,
             ],
             Lexer::TYPE_CAST => [
                 T_UNSET_CAST,
