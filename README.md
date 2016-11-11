@@ -1,6 +1,6 @@
 # highlight
 
-A PHP syntax highlighter. Highly unstable, use at your own risk.
+A PHP syntax highlighter written in PHP.
 
 ```php
 <?php
@@ -8,13 +8,16 @@ A PHP syntax highlighter. Highly unstable, use at your own risk.
 $hl = new Kelunik\Highlight\Highlighter(new HtmlFormatter("php"));
 
 // <optional>
+$hl->addPreProcessor(new Your\Custom\PreProcessor);
 $hl->addPostProcessor(new Your\Custom\PostProcessor);
 // </optional>
 
-$hl->highlight("<?php print 'Hello World';");
+print $hl->highlight("<?php print 'Hello World';");
 ```
 
 **CLI**
+
+These CLI scripts should give you some hints on how to use the API.
 
 ```bash
 bin/highlight /path/to/file.php

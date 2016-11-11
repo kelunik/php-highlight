@@ -2,10 +2,6 @@
     "name": "kelunik/highlight",
     "description": "PHP Syntax Highlighter",
     "type": "library",
-    "require": {
-        "php": "^7.0",
-        "nikic/php-parser": "^2.1"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -15,5 +11,9 @@
     ],
     "autoload": {
         "psr-4": {"Kelunik\\Highlight\\": "src"}
+    },
+    "require": {
+        "php": "^7.0",
+        "nikic/php-parser": "^2.1"
     }
 }
