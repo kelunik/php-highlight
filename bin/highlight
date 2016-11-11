@@ -3,12 +3,29 @@
 
 use Kelunik\Highlight\AnsiFormatter;
 
-if ($argc < 2) {
+define("IS_PHAR", class_exists(Phar::class) && Phar::running(true) !== "");
+
+if ($argc > 2) {
     echo "Usage: highlight /path/to/file.php";
     exit(1);
+}
+
+if (IS_PHAR && $argc === 2 && ($argv[1] === "-v" || $argv[1] === "--version")) {
+    $version = file_get_contents(__DIR__ . "/../info/build.version") ?: "dev-master";
+    $time = file_get_contents(__DIR__ . "/../info/build.time");
+
+    print "kelunik/highlight, " . $version . " (built: " . date("M jS Y H:i:s T", $time) . ")";
+    print PHP_EOL;
+    exit(0);
+}
+
+if ($argc === 2) {
+    $source = file_get_contents($argv[1]);
+} else if ($argc === 1) {
+    $source = file_get_contents("php://stdin");
 }
 
 require __DIR__ . "/../vendor/autoload.php";
 
 $hl = new Kelunik\Highlight\Highlighter(new AnsiFormatter);
-print $hl->highlight(file_get_contents($argv[1]));
+print $hl->highlight($source);

@@ -3,15 +3,21 @@
 
 use Kelunik\Highlight\HtmlFormatter;
 
-if ($argc < 2) {
+if ($argc > 2) {
     echo "Usage: highlight-html /path/to/file.php";
     exit(1);
+}
+
+if ($argc == 2) {
+    $source = file_get_contents($argv[1]);
+} else if ($argc === 1) {
+    $source = file_get_contents("php://stdin");
 }
 
 ?><!DOCTYPE html>
 <html>
     <head>
-        <title>kelunik/highlight - <?= htmlspecialchars($argv[1], ENT_QUOTES, "utf-8") ?></title>
+        <title>kelunik/highlight</title>
 
         <style>
             body {
@@ -110,7 +116,7 @@ if ($argc < 2) {
         require __DIR__ . "/../vendor/autoload.php";
 
         $hl = new Kelunik\Highlight\Highlighter(new HtmlFormatter("php"));
-        print $hl->highlight(file_get_contents($argv[1]));
+        print $hl->highlight($source);
 
         ?>
     </body>

@@ -10,10 +10,38 @@
         }
     ],
     "autoload": {
-        "psr-4": {"Kelunik\\Highlight\\": "src"}
+        "psr-4": {
+            "Kelunik\\Highlight\\": "src"
+        }
     },
     "require": {
         "php": "^7.0",
         "nikic/php-parser": "^2.1"
+    },
+    "require-dev": {
+        "macfja/phar-builder": "^0.2.5"
+    },
+    "extra": {
+        "phar-builder": {
+            "compression": "GZip",
+            "name": "highlight.phar",
+            "output-dir": "build",
+            "include": [
+                "info",
+                "src"
+            ],
+            "entry-point": "bin/highlight",
+            "events": {
+                "command.package.start": [
+                    "mkdir -p info",
+                    "git describe --tags > info/build.version",
+                    "php -r 'echo time();' > info/build.time"
+                ],
+                "command.package.end": [
+                    "rm -rf info",
+                    "chmod +x build/highlight.phar"
+                ]
+            }
+        }
     }
 }
