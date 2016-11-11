@@ -78,6 +78,16 @@ if ($argc < 2) {
             .php-identifier {
                 color: teal;
             }
+
+            .php-open-close {
+                color: grey;
+                font-weight: bold;
+            }
+
+            .php-comment {
+                color: grey;
+                font-style: italic;
+            }
         </style>
     </head>
 
