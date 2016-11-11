@@ -1,6 +1,6 @@
 # highlight
 
-A PHP syntax highlighter written in PHP.
+A (PHP) syntax highlighter written in PHP.
 
 ```php
 <?php
@@ -26,3 +26,7 @@ bin/highlight /path/to/file.php
 ```bash
 bin/highlight-html /path/to/file.php > out.html
 ```
+
+**Supported Languages**
+
+Currently, only PHP is supported. But you could just add another `Lexer`.
