@@ -15,6 +15,8 @@ interface Lexer {
     const TYPE_OPEN_CLOSE = "open-close";
     const TYPE_IDENTIFIER = "identifier";
     const TYPE_SCREAM = "scream";
+    const TYPE_TOKEN = "token";
+    const TYPE_INVALID = "invalid";
 
     public function lex(string $source): array;
 }

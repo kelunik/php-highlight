@@ -12,6 +12,8 @@ class AnsiFormatter implements TokenFormatter {
         Lexer::TYPE_NUMBER => "0;31", // red
         Lexer::TYPE_COMMENT => "0;37", // dark grey
         Lexer::TYPE_OPEN_CLOSE => "0;37", // dark grey
+        Lexer::TYPE_TOKEN => "0;37", // dark grey
+        Lexer::TYPE_INVALID => "41", // red background
     ];
 
     public function formatToken(string $type, string $text): string {
