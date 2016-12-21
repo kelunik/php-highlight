@@ -2,6 +2,8 @@
 <?php
 
 use Kelunik\Highlight\AnsiFormatter;
+use Kelunik\Highlight\JsonLexer;
+use Kelunik\Highlight\PhpLexer;
 
 define("IS_PHAR", class_exists(Phar::class) && Phar::running(true) !== "");
 
@@ -19,13 +21,15 @@ if (IS_PHAR && $argc === 2 && ($argv[1] === "-v" || $argv[1] === "--version")) {
     exit(0);
 }
 
-if ($argc === 2) {
-    $source = file_get_contents($argv[1]);
-} else if ($argc === 1) {
-    $source = file_get_contents("php://stdin");
-}
-
 require __DIR__ . "/../vendor/autoload.php";
 
-$hl = new Kelunik\Highlight\Highlighter(new AnsiFormatter);
+if ($argc === 2) {
+    $source = file_get_contents($argv[1]);
+    $lexer = substr($argv[1], -5) === ".json" ? new JsonLexer : new PhpLexer;
+} else if ($argc === 1) {
+    $source = file_get_contents("php://stdin");
+    $lexer = new PhpLexer;
+}
+
+$hl = new Kelunik\Highlight\Highlighter(new AnsiFormatter, $lexer);
 print $hl->highlight($source);

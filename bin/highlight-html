@@ -2,16 +2,22 @@
 <?php
 
 use Kelunik\Highlight\HtmlFormatter;
+use Kelunik\Highlight\JsonLexer;
+use Kelunik\Highlight\PhpLexer;
 
 if ($argc > 2) {
     echo "Usage: highlight-html /path/to/file.php";
     exit(1);
 }
 
-if ($argc == 2) {
+require __DIR__ . "/../vendor/autoload.php";
+
+if ($argc === 2) {
     $source = file_get_contents($argv[1]);
+    $lexer = substr($argv[1], -5) === ".json" ? new JsonLexer : new PhpLexer;
 } else if ($argc === 1) {
     $source = file_get_contents("php://stdin");
+    $lexer = new PhpLexer;
 }
 
 ?><!DOCTYPE html>
@@ -113,9 +119,7 @@ if ($argc == 2) {
     <body>
         <?php
 
-        require __DIR__ . "/../vendor/autoload.php";
-
-        $hl = new Kelunik\Highlight\Highlighter(new HtmlFormatter("php"));
+        $hl = new Kelunik\Highlight\Highlighter(new HtmlFormatter("php"), $lexer);
         print $hl->highlight($source);
 
         ?>
